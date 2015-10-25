@@ -10,9 +10,46 @@
       </div>
       <div class="social">
         <p>By <a href="http://efekarakus.com" target="_blank">Efe Karakus</a></p>
-        <p>and Angky William</p>
+        <p>Follow: <a href="https://twitter.com/efekarakus" class="twitter" target="_blank">@efekarakus</a>  </p>
         <p>Updated Fri, Oct 23, 2015</p>
       </div>
     </div>
+    <div class="graphic">
+      <div class="sections">
+        <section class="step">
+          <h2>Communication</h2>
+          <p>
+            Speech.
+          </p>
+        </section>
+        <section class="step">
+          <h2>Distribution</h2>
+          <p>
+            Our mid laner, Zilean, talked in total for 15 minutes. Which is also equivalent to 
+            30% of the total duration of the game. On the other hand, the top laner and jungler talked a lot less.
+          </p>
+        </section>
+      </div>
+      <div class="vis"></div>
+    </div>
+    
+    <script src="libs/d3.min.js" charset="utf-8"></script>
+    <script src="libs/jquery-2.1.4.min.js"></script>
+    <script src="libs/scroller.js"></script>
+    <script src="charts/comms.js"></script>
+    <script src="charts/main.js"></script>
+    <script>
+      $(document).scroll(function() {
+        var START_POSITION = 180,
+            END_POSITION = 30,
+            MAX_DISTANCE = 150;
+        var distance = $(document).scrollTop();
+        if (distance >= MAX_DISTANCE) {
+          $(".vis").css("top", END_POSITION + "px");
+        } else {
+          $(".vis").css("top", (START_POSITION - distance) + "px");
+        }
+      })
+    </script>
   </body>
 </html>
