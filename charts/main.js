@@ -1,6 +1,18 @@
-function display(data) {
+function display(error, top, jungle, mid) {
   // TODO create the plot here
-  
+  var plot = comms();
+  d3.select(".vis")
+    .datum([{
+      "position": "top",
+      "seconds": top.seconds
+    }, {
+      "position": "jungle",
+      "seconds": jungle.seconds
+    }, {
+      "position": "mid",
+      "seconds": mid.seconds
+    }])
+    .call(plot);
   
   var steps = d3.selectAll(".step");
   var scroll = scroller()
@@ -17,4 +29,8 @@ function display(data) {
   });
 }
 
-display([]);
+queue()
+  .defer(d3.json, "data/top-1986803606.json")
+  .defer(d3.json, "data/jungle-1986803606.json")
+  .defer(d3.json, "data/mid-1986803606.json")
+  .await(display);

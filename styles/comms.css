@@ -1,0 +1,11 @@
+
+/* players */
+g.players rect.bounding-box {
+  fill: none;
+  stroke-width: 2;
+  stroke: black;
+}
+
+g.players rect.bounding-box rect.strip {
+  fill: black;
+}
