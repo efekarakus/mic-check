@@ -30,7 +30,7 @@ function display(error, top, jungle, mid) {
 }
 
 queue()
-  .defer(d3.json, "data/top-1986803606.json")
-  .defer(d3.json, "data/jungle-1986803606.json")
-  .defer(d3.json, "data/mid-1986803606.json")
+  .defer(d3.json, "data/top.json")
+  .defer(d3.json, "data/jungle.json")
+  .defer(d3.json, "data/mid.json")
   .await(display);
