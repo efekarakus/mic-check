@@ -1,3 +1,12 @@
+@font-face {
+  font-family: BigNoodle;
+  src: url(fonts/big_noodle_titling.ttf);
+}
+@font-face {
+  font-family: BigNoodleItalic;
+  src: url(fonts/big_noodle_titling_oblique.ttf);
+}
+
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,700);
 
 body {
@@ -19,8 +28,12 @@ body {
 }
 
 .header .title h1 {
-  font-size: 40px;
+  padding-top: 10px;
+  letter-spacing: 2px;
+  font-family: BigNoodleItalic;
+  font-size: 80px;
   font-weight: 700;
+  margin: 0;
 }
 
 .header .social {
@@ -64,10 +77,16 @@ body {
 }
 
 .sections section h2 {
+  font-family: BigNoodle;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 26px;
+  letter-spacing: 1.5px;
   margin-bottom: 2px;
   line-height: 1.2em;
+}
+
+.sections section a {
+  color: #CD0A6C;
 }
 
 .vis {
@@ -76,10 +95,10 @@ body {
   top: 180px;
   z-index: 1;
   margin-left: 0;
-  width: 810px;
+  width: 830px;
   height: 600px;
 }
 
 span.pink {
-  color: #DE77AE;
+  color: #CD0A6C;
 }
