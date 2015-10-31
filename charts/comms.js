@@ -25,11 +25,11 @@ function comms() {
   attributes.legends.players = {
     translate: { 
       x: 0, 
-      y: function (i) { 
+      y: function(i) {
         var offset = attributes.legends.top.height;
         var height = (attributes.players.height + attributes.players.margin.top + attributes.players.margin.bottom);
         return  offset + i*height;
-      } 
+      }
     }
   };
   attributes.legends.bottom = {
@@ -66,7 +66,6 @@ function comms() {
   
   var svg = undefined,
       g = {
-        legend: {}
       };
   var x = d3.scale.linear()
           .domain([0, gameLength])
@@ -137,9 +136,40 @@ function comms() {
           .attr("dx", function(d) { return (d === gameLength) ? ".85em" : "0em"; })
           .attr("transform", "rotate(10)");
       
+      /* legends */
+      var playerLegend = svg.selectAll(".player-legend")
+        .data(data).enter()
+        .append("g")
+          .attr("transform", function(d, i) {
+            var translate = attributes.legends.players.translate;
+            var x = translate.x;
+            var y = translate.y(i);
+            return "translate(" + x + "," + y + ")";
+          });
       
+      playerLegend.append("text")
+        .text(function(d) { return d.position; })
+        .attr("x", 70)
+        .attr("y", 70)
+        .attr("text-anchor", "middle")
+        .attr("dy", "-6px")
+        .attr("font-family", "BigNoodle");
+      
+      playerLegend.append("image")
+        .attr("xlink:href", function(d) { return "images/" + d.champion + ".png"; })
+        .attr("x", 50)
+        .attr("y", 70)
+        .attr("height", "40px")
+        .attr("width", "40px");
       
       g.players = players;
+      g.axes = {
+        top: topAxis,
+        bottom: botAxis
+      };
+      g.legends = {
+        players: playerLegend
+      };
     })
   }
    

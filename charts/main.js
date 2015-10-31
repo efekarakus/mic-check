@@ -2,16 +2,7 @@ function display(error, top, jungle, mid) {
   // TODO create the plot here
   var plot = comms();
   d3.select(".vis")
-    .datum([{
-      "position": "top",
-      "seconds": top.seconds
-    }, {
-      "position": "jungle",
-      "seconds": jungle.seconds
-    }, {
-      "position": "mid",
-      "seconds": mid.seconds
-    }])
+    .datum([top, jungle, mid])
     .call(plot);
   
   var steps = d3.selectAll(".step");
