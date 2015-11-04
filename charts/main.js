@@ -12,7 +12,7 @@ function display(error, top, jungle, mid) {
   
   scroll.on("active", function(index) { 
     steps.style("opacity", function(d, i) { return i === index ? 1 : 0.1; });
-    // TODO activate section
+    plot.activate(index);
   });
   
   scroll.on("progress", function(index, percentage) {
