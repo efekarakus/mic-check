@@ -62,7 +62,7 @@ function comms() {
   var gameLength = 2225; // 37:05
   var previousSection = -1,
       currentSection = 0,
-      visualize = [];
+      activateFunctions = [];
   
   var svg = undefined,
       g = {
@@ -72,8 +72,11 @@ function comms() {
           .range([0, attributes.players.width]);
           
   var chart = function(selection) {
-    // svg
     selection.each(function (data) {
+      data.forEach(function(d) {
+        d.sum = d.seconds.reduce(function(a,b) { return a + b; });
+      });
+      
       svg = d3.select(this).append("svg")
         .attr("width", attributes.svg.width)
         .attr("height", attributes.svg.height);
@@ -96,9 +99,8 @@ function comms() {
         .attr("height", attributes.players.height)
         .attr("class", "bounding-box");
       
-      var barWidth = null;
-      players.selectAll(".strips")
-        .data(function(d) { barWidth = attributes.players.width/d.seconds.length; return reduce(d.seconds); })
+      players.selectAll(".strip")
+        .data(function(d) { return stack(reduce(d.seconds)); })
         .enter()
         .append("rect")
           .attr("x", function(d, i) { return x(d.start); })
@@ -106,6 +108,25 @@ function comms() {
           .attr("width", function(d, i) { return x(d.end) - x(d.start); })
           .attr("height", attributes.players.height)
           .attr("class", "strip");
+          
+      players.append("g").attr("class", "time")
+        .attr("opacity", 0)
+        .append("text")
+        .text(function(d) {
+          var minutes = Math.floor(d.sum / 60);
+          var seconds = d.sum % 60;
+          var percentage = Math.round( (d.sum / gameLength) * 1000 )/10
+          
+          return minutes + ":" + seconds + " (" + percentage + "%)";
+        })
+        .attr("x", function(d) {
+          return x(d.sum) + 20;
+        })
+        .attr("y", attributes.players.height / 2)
+        .attr("dy", "15px")
+        .attr("font-family", "BigNoodle")
+        .attr("font-size", "60px");
+        
       
       /* axes */
       var axis = d3.svg.axis()
@@ -170,8 +191,61 @@ function comms() {
       g.legends = {
         players: playerLegend
       };
+      
+      setupSections();
     })
   }
+  
+  /* Activation Functions */
+  
+  chart.activate = function(index) {
+    currentSection = index;
+    var sign = (currentSection - previousSection) < 0 ? -1 : 1;
+    var scrolledSections = d3.range(previousSection + sign, currentSection + sign, sign);
+    scrolledSections.forEach(function(i) {
+      activateFunctions[i]();
+    });
+    previousSection = currentSection;
+  }
+  
+  var communication = function() {
+    var players = g.players;
+    players.selectAll(".time")
+      .transition()
+      .duration(0)
+      .transition()
+      .duration(200)
+      .attr("opacity", 0)
+      .each("end", function() {
+        players.selectAll(".strip")
+          .transition()
+          .duration(0)
+          .transition()
+          .duration(600)
+            .attr("x", function(d) { return x(d.start); });
+      })
+  }
+  
+  var distribution = function() {
+    var players = g.players;
+    players.selectAll(".strip")
+      .transition()
+      .duration(800)
+        .attr("x", function(d) { return d.transition; })
+      .each("end", function() {
+        players.selectAll(".time")
+          .transition()
+          .duration(200)
+          .attr("opacity", 1.0);
+      })
+  }
+  
+  function setupSections() {
+    activateFunctions[0] = communication;
+    activateFunctions[1] = distribution;
+  }
+   
+   /* Data Manipulation */
    
    /**
     * Find all contiguous blocks of talking
@@ -201,6 +275,15 @@ function comms() {
       }
     }
     return bars;
+   }
+   
+   function stack(bars) {
+     var sum = 0;
+     bars.forEach(function(bar, index) {
+       bar.transition = sum;
+       sum += (x(bar.end) - x(bar.start));
+     });
+     return bars;
    }
    
    return chart;
