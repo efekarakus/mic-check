@@ -115,7 +115,7 @@ function comms() {
         .text(function(d) {
           var minutes = Math.floor(d.sum / 60);
           var seconds = d.sum % 60;
-          var percentage = Math.round( (d.sum / gameLength) * 1000 )/10
+          var percentage = Math.round( (d.sum / gameLength) * 1000 )/10;
           
           return minutes + ":" + seconds + " (" + percentage + "%)";
         })
@@ -127,7 +127,6 @@ function comms() {
         .attr("font-family", "BigNoodle")
         .attr("font-size", "60px");
         
-      
       /* axes */
       var axis = d3.svg.axis()
                 .scale(x)
@@ -200,6 +199,7 @@ function comms() {
   
   chart.activate = function(index) {
     currentSection = index;
+    console.log(currentSection, previousSection);
     var sign = (currentSection - previousSection) < 0 ? -1 : 1;
     var scrolledSections = d3.range(previousSection + sign, currentSection + sign, sign);
     scrolledSections.forEach(function(i) {
@@ -210,24 +210,39 @@ function comms() {
   
   var communication = function() {
     var players = g.players;
-    players.selectAll(".time")
+    
+    // below section
+    if (previousSection === 1) {
+      players.selectAll(".time")
+        .transition()
+        .duration(0)
+        .attr("opacity", 0);
+        
+      players.selectAll(".strip")
+        .transition()
+        .duration(0)
+        .attr("x", function(d) { return d.transition; });
+    }
+    
+    players.selectAll(".strip")
       .transition()
-      .duration(0)
-      .transition()
-      .duration(200)
-      .attr("opacity", 0)
-      .each("end", function() {
-        players.selectAll(".strip")
-          .transition()
-          .duration(0)
-          .transition()
-          .duration(600)
-            .attr("x", function(d) { return x(d.start); });
-      })
+      .duration(600)
+        .attr("x", function(d) { return x(d.start); });
   }
   
   var distribution = function() {
     var players = g.players;
+    
+    // above section
+    if (previousSection === 0) {
+      players.selectAll(".strip")
+        .transition()
+        .duration(0)
+        .attr("x", function(d) { return x(d.start); })
+    }
+    
+    // TODO below section
+    
     players.selectAll(".strip")
       .transition()
       .duration(800)
@@ -240,9 +255,24 @@ function comms() {
       })
   }
   
+  function teamFight() {
+    
+  }
+  
+  function interruptions() {
+    
+  }
+  
+  function conclusion() {
+    
+  }
+  
   function setupSections() {
     activateFunctions[0] = communication;
     activateFunctions[1] = distribution;
+    activateFunctions[2] = teamFight;
+    activateFunctions[3] = interruptions;
+    activateFunctions[4] = conclusion;
   }
    
    /* Data Manipulation */
