@@ -94,7 +94,7 @@ body {
   width: 50px;
   height: 30px;
   border: 1px solid black;
-  background: rgba(205, 10, 108, .7);
+  background: rgba(205, 10, 108, 1);
   padding: .35em 2em;
   text-align: center;
   cursor: pointer;
@@ -102,10 +102,6 @@ body {
   -webkit-transform: skew(-.15rad);
   -ms-transform: skew(-.15rad);
   transform: skew(-.15rad);
-}
-
-.sections section .btn:hover {
-  background: rgba(205, 10, 108, 1);
 }
 
 .sections section .btn span {

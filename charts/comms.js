@@ -199,7 +199,6 @@ function comms() {
   
   chart.activate = function(index) {
     currentSection = index;
-    console.log(currentSection, previousSection);
     var sign = (currentSection - previousSection) < 0 ? -1 : 1;
     var scrolledSections = d3.range(previousSection + sign, currentSection + sign, sign);
     scrolledSections.forEach(function(i) {
@@ -207,6 +206,65 @@ function comms() {
     });
     previousSection = currentSection;
   }
+  
+  chart.play = function() {
+    if (currentSection !== 0) {
+      return;
+    }
+    
+    var button = d3.select(".btn");
+    button.select("span")
+      .text("stop");
+    button.attr("action", "pause");
+    
+    topAudio.play();
+    jungleAudio.play();
+    midAudio.play();
+    
+    var players = g.players;
+    players.selectAll(".strip")
+      .transition("audioplay")
+      .delay(function(d) { return d.start*1000; })
+      .attr("y", 2)
+      .attr("height", attributes.players.height - 4)
+      .style("fill", "#CD0A6C")
+      .style("stroke", "#CD0A6C")
+      .style("stroke-width", "4");
+      
+    players.selectAll(".strip")
+      .transition("audiostop")
+      .delay(function(d) { return d.end*1000; })
+      .attr("y", 0)
+      .attr("height", attributes.players.height)
+      .style("fill", "#000")
+      .style("stroke", "#000")
+      .style("stroke-width", "0");
+  }
+  
+  chart.stop = function() {
+    var button = d3.select(".btn");
+    button.select("span")
+      .text("play");
+      
+    button.attr("action", "play");
+    
+    topAudio.pause();
+    jungleAudio.pause();
+    midAudio.pause();
+    topAudio.currentTime = audioStart.top;
+    jungleAudio.currentTime = audioStart.jungle;
+    midAudio.currentTime = audioStart.mid;
+    
+    var players = g.players;
+    
+    players.selectAll(".strip")
+      .transition("audioplay")
+      .duration(0)
+      .style("fill", "#000")
+      .style("stroke", "#000")
+      .style("stroke-width", "0");
+  }
+  
   
   var communication = function() {
     var players = g.players;
@@ -235,10 +293,12 @@ function comms() {
     
     // above section
     if (previousSection === 0) {
+      chart.stop(); // FIXME
+      
       players.selectAll(".strip")
         .transition()
         .duration(0)
-        .attr("x", function(d) { return x(d.start); })
+        .attr("x", function(d) { return x(d.start); });
     }
     
     // TODO below section
@@ -252,7 +312,7 @@ function comms() {
           .transition()
           .duration(200)
           .attr("opacity", 1.0);
-      })
+      });
   }
   
   function teamFight() {
