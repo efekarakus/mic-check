@@ -1,5 +1,18 @@
+var audioStart = {
+  'top': 114,
+  'jungle': 196,
+  'mid': 119
+};
+
+var topAudio = new Audio("./data/audio/Top.mp3");
+topAudio.currentTime += audioStart.top;
+topAudio.volume = 0.50; 
+var jungleAudio = new Audio("./data/audio/Jungle.mp3");
+jungleAudio.currentTime += audioStart.jungle;
+var midAudio = new Audio("./data/audio/Mid.mp3");
+midAudio.currentTime += audioStart.mid;
+
 function display(error, top, jungle, mid) {
-  // TODO create the plot here
   var plot = comms();
   d3.select(".vis")
     .datum([top, jungle, mid])
@@ -15,9 +28,16 @@ function display(error, top, jungle, mid) {
     plot.activate(index);
   });
   
-  scroll.on("progress", function(index, percentage) {
-    // TODO update section
-  });
+  // audio button
+  d3.select(".btn")
+    .on("click", function() {
+      var action = d3.select(this).attr("action");
+      if (action === "play") {
+        plot.play();
+      } else {
+        plot.stop();
+      }
+    });
 }
 
 queue()
