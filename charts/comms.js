@@ -60,6 +60,12 @@ function comms() {
   };
   
   var gameLength = 2225; // 37:05
+  var zoomTimes = {
+    start: 1740,  // 21:00
+    end: 1920     // 24:00
+  }
+    
+    
   var previousSection = -1,
       currentSection = 0,
       activateFunctions = [];
@@ -69,6 +75,10 @@ function comms() {
       };
   var x = d3.scale.linear()
           .domain([0, gameLength])
+          .range([0, attributes.players.width]);
+          
+  var zoomX = d3.scale.linear()
+          .domain([zoomTimes.start, zoomTimes.end])
           .range([0, attributes.players.width]);
           
   var chart = function(selection) {
@@ -141,7 +151,7 @@ function comms() {
       
       var topAxis = svg.append("g")
         .attr("transform", "translate(" + attributes.axes.top.translate.x + ", " + attributes.axes.top.translate.y + ")" )
-        .attr("class", "axis")
+        .attr("class", "top axis")
         .call(axis)
           .selectAll("text")
           .attr("dx", function(d) { return (d === gameLength) ? ".85em" : "0em"; })
@@ -150,11 +160,39 @@ function comms() {
       axis.orient("bottom");
       var botAxis = svg.append("g")
         .attr("transform", "translate(" + attributes.axes.bottom.translate.x + ", " + attributes.axes.bottom.translate.y + ")" )
-        .attr("class", "axis")
+        .attr("class", "bot axis")
         .call(axis)
           .selectAll("text")
           .attr("dx", function(d) { return (d === gameLength) ? ".85em" : "0em"; })
           .attr("transform", "rotate(10)");
+      
+      var zoomAxis = d3.svg.axis()
+      .scale(zoomX)
+      .tickValues(d3.range(zoomTimes.start, zoomTimes.end + 1).filter(function(d, i) { return (d%10 === 0) || (i === gameLength); }))
+      .tickFormat(function(d) { 
+        var minutes = Math.floor(d/60);
+        if (minutes < 10) minutes = "0" + minutes;
+        var seconds = d%60;
+        if (seconds < 10) seconds = "0" + seconds;
+        return minutes + ":" + seconds })
+      .orient("top");
+    
+    var topZoomAxis = svg.append("g")
+        .attr("transform", "translate(" + attributes.axes.top.translate.x + ", " + attributes.axes.top.translate.y + ")" )
+        .attr("class", "top zoom axis")
+        .attr("opacity", 0)
+        .call(zoomAxis)
+          .selectAll("text")
+          .attr("dx", function(d) { return (d === zoomTimes.end) ? ".85em" : "0em"; });
+          
+    zoomAxis.orient("bottom");
+    var botZoomAxis = svg.append("g")
+        .attr("transform", "translate(" + attributes.axes.bottom.translate.x + ", " + attributes.axes.bottom.translate.y + ")" )
+        .attr("class", "bot zoom axis")
+        .attr("opacity", 0)
+        .call(zoomAxis)
+          .selectAll("text")
+          .attr("dx", function(d) { return (d === zoomTimes.end) ? ".85em" : "0em"; });
       
       /* legends */
       var playerLegend = svg.selectAll(".player-legend")
@@ -185,7 +223,11 @@ function comms() {
       g.players = players;
       g.axes = {
         top: topAxis,
-        bottom: botAxis
+        bot: botAxis,
+        zoom: {
+          top: topZoomAxis,
+          bot: botZoomAxis
+        }
       };
       g.legends = {
         players: playerLegend
@@ -263,6 +305,10 @@ function comms() {
       .style("fill", "#000")
       .style("stroke", "#000")
       .style("stroke-width", "0");
+      
+    players.selectAll(".strip")
+      .transition("audiostop")
+      .duration(0);
   }
   
   
@@ -277,9 +323,11 @@ function comms() {
         .attr("opacity", 0);
         
       players.selectAll(".strip")
-        .transition()
+        .transition("distribution-placement")
         .duration(0)
-        .attr("x", function(d) { return d.transition; });
+        .attr("x", function(d) { return d.transition; })
+        .attr("width", function(d) { return x(d.end) - x(d.start); })
+        .attr("opacity", 1.0);
     }
     
     players.selectAll(".strip")
@@ -303,20 +351,106 @@ function comms() {
     
     // TODO below section
     
+    if (previousSection === 2) {
+      svg.select("g.top.axis").transition()
+      .duration(0)
+      .attr("opacity", 1);
+      
+      svg.select("g.bot.axis").transition()
+          .duration(0)
+          .attr("opacity", 1);
+          
+      svg.select("g.top.zoom.axis").transition()
+        .duration(0)
+        .attr("opacity", 0);
+        
+      svg.select("g.bot.zoom.axis").transition()
+          .duration(0)
+          .attr("opacity", 0);
+      
+      players.selectAll(".strip")
+        .transition("team-fight")
+        .duration(0)
+          .attr("x", function(d) { 
+            if((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) {
+              return zoomX(d.start);
+            } else {
+              return d.transition;
+            }
+          })
+          .attr("width", function(d) { 
+            if((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) {
+              return zoomX(d.end) - zoomX(d.start); 
+            } else {
+              return x(d.end) - x(d.start);
+            }
+          });
+    }
+    
     players.selectAll(".strip")
-      .transition()
+      .transition("distribution-placement")
       .duration(800)
         .attr("x", function(d) { return d.transition; })
-      .each("end", function() {
-        players.selectAll(".time")
-          .transition()
-          .duration(200)
-          .attr("opacity", 1.0);
-      });
+        .attr("width", function(d) { return x(d.end) - x(d.start); })
+        .attr("opacity", 1.0);
+    
+    players.selectAll(".time")
+      .transition()
+      .delay(800)
+      .duration(200)
+      .attr("opacity", 1.0);
   }
   
   function teamFight() {
     
+    var players = g.players;
+    
+    players.selectAll(".time")
+        .transition()
+        .duration(0)
+        .attr("opacity", 0);
+    
+    svg.select("g.top.axis").transition()
+      .duration(0)
+      .attr("opacity", 0);
+      
+    svg.select("g.bot.axis").transition()
+        .duration(0)
+        .attr("opacity", 0);
+        
+    svg.select("g.top.zoom.axis").transition()
+      .duration(0)
+      .attr("opacity", 1);
+      
+   svg.select("g.bot.zoom.axis").transition()
+      .duration(0)
+      .attr("opacity", 1);
+
+    players.selectAll(".strip")
+      .transition("distribution-placement")
+      .duration(0)
+        .attr("opacity", function(d) {
+          return ((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) ? 1.0 : 0.0;
+        });
+    
+        
+    players.selectAll(".strip")
+      .transition("team-fight")
+      .duration(800)
+        .attr("x", function(d) { 
+          if((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) {
+            return zoomX(d.start);
+          } else {
+            return d.transition;
+          }
+        })
+        .attr("width", function(d) { 
+          if((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) {
+            return zoomX(d.end) - zoomX(d.start); 
+          } else {
+            return x(d.end) - x(d.start);
+          }
+        });
   }
   
   function interruptions() {
