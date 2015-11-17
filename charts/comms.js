@@ -59,6 +59,63 @@ function comms() {
     }
   };
   
+  var timeline = [
+    {
+      time: 1743,
+      killer: "Ashe",
+      victim: "Zilean",
+      assists: []
+    },
+    {
+      time: 1746,
+      killer: "Hecarim",
+      victim: "Baron",
+      assists: []
+    },
+    {
+      time: 1800,
+      killer: "Fiora",
+      victim: "Yasuo",
+      assists: ["Sivir", "Hecarim", "Braum"]
+    },
+    {
+      time: 1803,
+      killer: "Hecarim",
+      victim: "Nami",
+      assists: ["Braum"]
+    },
+    {
+      time: 1809,
+      killer: "Braum",
+      victim: "Rengar",
+      assists: ["Zilean", "Sivir"]
+    },
+    {
+      time: 1828,
+      killer: "Zilean",
+      victim: "Tower",
+      assists: []
+    },
+    {
+      time: 1843,
+      killer: "Zilean",
+      victim: "Tower",
+      assits: []
+    },
+    {
+      time: 1848,
+      killer: "Zilean",
+      victim: "Inhibitor",
+      assists: []
+    },
+    {
+      time: 1872,
+      killer: "Hecarim",
+      victim: "Dragon",
+      assists: []
+    }
+  ];
+  
   var gameLength = 2225; // 37:05
   var zoomTimes = {
     start: 1740,  // 21:00
@@ -100,7 +157,8 @@ function comms() {
             var margin = attributes.players.margin;
             return "translate(" + (translate.x + margin.left) + "," + (translate.y(i) + margin.top) + ")";
           })
-          .attr("class", "players");
+          .attr("class", "players")
+          .attr("id", function(d) { return d.position; })
       
       players.append("rect")
         .attr("x", 0)
@@ -113,9 +171,9 @@ function comms() {
         .data(function(d) { return stack(reduce(d.seconds)); })
         .enter()
         .append("rect")
-          .attr("x", function(d, i) { return x(d.start); })
+          .attr("x", function(d) { return x(d.start); })
           .attr("y", 0)
-          .attr("width", function(d, i) { return x(d.end) - x(d.start); })
+          .attr("width", function(d) { return x(d.end) - x(d.start); })
           .attr("height", attributes.players.height)
           .attr("class", "strip");
           
@@ -136,7 +194,60 @@ function comms() {
         .attr("dy", "15px")
         .attr("font-family", "BigNoodle")
         .attr("font-size", "60px");
-        
+      
+      /* Overlaps */
+      var topAndJungle = overlap(data[0].seconds, data[1].seconds);
+      var topAndMid = overlap(data[0].seconds, data[2].seconds);
+      var jungleAndMid = overlap(data[1].seconds, data[2].seconds);
+      
+      [d3.select("#Top"), d3.select("#Jungle")].forEach(function(selection) {
+        selection.selectAll(".top-jungle-overlap")
+        .data(reduce(topAndJungle))
+        .enter()
+        .append("rect")
+          .attr("x", function(d) { return x(d.start); })
+          .attr("y", 2)
+          .attr("width", function(d) { return x(d.end) - x(d.start); })
+          .attr("height", attributes.players.height - 2)
+          .attr("class", "overlap")
+          .attr("fill", "#CD0A6C")
+          .style("stroke", "1")
+          .style("stroke", "#CD0A6C")
+          .attr("opacity", 0);
+      });
+      
+      [d3.select("#Top"), d3.select("#Mid")].forEach(function(selection) {
+        selection.selectAll(".top-mid-overlap")
+        .data(reduce(topAndMid))
+        .enter()
+        .append("rect")
+          .attr("x", function(d) { return x(d.start); })
+          .attr("y", 2)
+          .attr("width", function(d) { return x(d.end) - x(d.start); })
+          .attr("height", attributes.players.height - 2)
+          .attr("class", "overlap")
+          .attr("fill", "#CD0A6C")
+          .style("stroke", "1")
+          .style("stroke", "#CD0A6C")
+          .attr("opacity", 0);
+      });
+      
+      [d3.select("#Jungle"), d3.select("#Mid")].forEach(function(selection) {
+        selection.selectAll(".jungle-mid-overlap")
+        .data(reduce(jungleAndMid))
+        .enter()
+        .append("rect")
+          .attr("x", function(d) { return x(d.start); })
+          .attr("y", 2)
+          .attr("width", function(d) { return x(d.end) - x(d.start); })
+          .attr("height", attributes.players.height - 2)
+          .attr("class", "overlap")
+          .attr("fill", "#CD0A6C")
+          .style("stroke", "1")
+          .style("stroke", "#CD0A6C")
+          .attr("opacity", 0);
+      });
+      
       /* axes */
       var axis = d3.svg.axis()
                 .scale(x)
@@ -369,7 +480,7 @@ function comms() {
           .attr("opacity", 0);
       
       players.selectAll(".strip")
-        .transition("team-fight")
+        .transition("objective-control")
         .duration(0)
           .attr("x", function(d) { 
             if((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) {
@@ -385,6 +496,12 @@ function comms() {
               return x(d.end) - x(d.start);
             }
           });
+          
+      players.selectAll(".overlap").transition()
+          .duration(0)
+          .attr("width", function(d) { return x(d.end) - x(d.start); })
+          .attr("x", function(d) { return x(d.start); })
+          .attr("opacity", 0);
     }
     
     players.selectAll(".strip")
@@ -401,7 +518,7 @@ function comms() {
       .attr("opacity", 1.0);
   }
   
-  function teamFight() {
+  function objectiveControl() {
     
     var players = g.players;
     
@@ -435,7 +552,7 @@ function comms() {
     
         
     players.selectAll(".strip")
-      .transition("team-fight")
+      .transition("objective-control")
       .duration(800)
         .attr("x", function(d) { 
           if((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) {
@@ -451,6 +568,32 @@ function comms() {
             return x(d.end) - x(d.start);
           }
         });
+        
+    players.selectAll(".overlap")
+      .transition()
+      .delay(800)
+      .duration(0)
+        .attr("x", function(d) {
+          if((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) {
+            return zoomX(d.start);
+          } else {
+            return x(d.start);
+          }
+        })
+        .attr("width", function(d) {
+          if((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) {
+            return zoomX(d.end) - zoomX(d.start); 
+          } else {
+            return x(d.end) - x(d.start);
+          }
+        })
+        .attr("opacity", function(d) {
+          if((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
   }
   
   function interruptions() {
@@ -464,12 +607,30 @@ function comms() {
   function setupSections() {
     activateFunctions[0] = communication;
     activateFunctions[1] = distribution;
-    activateFunctions[2] = teamFight;
+    activateFunctions[2] = objectiveControl;
     activateFunctions[3] = interruptions;
     activateFunctions[4] = conclusion;
   }
    
    /* Data Manipulation */
+   
+   function overlap(a, b) {
+     var duration = a.length;
+     var overlap = [];
+     
+     for (var second = 0; second < duration; second += 1) {
+       var ai = a[second];
+       var bi = b[second];
+       
+       if ( (ai === 1) && (bi === 1)) {
+         overlap.push(1);
+       } else {
+         overlap.push(0);
+       }
+     }
+     
+     return overlap;
+   }
    
    /**
     * Find all contiguous blocks of talking

@@ -12,6 +12,7 @@ jungleAudio.currentTime += audioStart.jungle;
 var midAudio = new Audio("./data/audio/Mid.mp3");
 midAudio.currentTime += audioStart.mid;
 
+
 function display(error, top, jungle, mid) {
   var plot = comms();
   d3.select(".vis")

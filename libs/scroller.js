@@ -70,7 +70,7 @@ function scroller() {
     // starting position relative to the top
     // of the first section.
     sectionPositions = [];
-    var startPos;
+    var startPos = 0;
     sections.each(function(d,i) {
       var top = this.getBoundingClientRect().top;
       if(i === 0) {
@@ -89,8 +89,8 @@ function scroller() {
    *
    */
   function position() {
-    var pos = window.pageYOffset - 10 - containerStart;
-    var sectionIndex = d3.bisect(sectionPositions, pos);
+    var pos = window.pageYOffset + containerStart;
+    var sectionIndex = d3.bisectLeft(sectionPositions, pos) - 1;
     sectionIndex = Math.min(sections.size() - 1, sectionIndex);
 
     if (currentIndex !== sectionIndex) {
