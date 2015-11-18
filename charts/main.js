@@ -1,3 +1,5 @@
+distribution();
+
 var audioStart = {
   'top': 114,
   'jungle': 196,

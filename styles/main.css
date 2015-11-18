@@ -91,6 +91,7 @@ body {
 
 .sections section .btn {
   margin: 0 auto;
+  margin-top: 30px;
   width: 50px;
   height: 30px;
   border: 1px solid black;
@@ -129,6 +130,13 @@ body {
   margin-left: 0;
   width: 830px;
   height: 600px;
+}
+
+.fiora-distribution {
+  margin: 0 auto;
+  margin-top: 20px;
+  width: 220px;
+  height: 220px;
 }
 
 span.pink {

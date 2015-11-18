@@ -12,54 +12,55 @@
       <div class="social">
         <p>By <a href="http://efekarakus.com" target="_blank">Efe Karakus</a></p>
         <p>Follow: <a href="https://twitter.com/efekarakus" class="twitter" target="_blank">@efekarakus</a>  </p>
-        <p>Updated Fri, Oct 23, 2015</p>
+        <p>Updated Tue, Nov 17, 2015</p>
       </div>
     </div>
     <div class="graphic">
       <div class="sections">
-        <section class="step">
+        <section id="communication-section" class="step">
           <h2>Communication</h2>
           <p>
-            One of the intricacies of multiplayer esports such as League of Legends (LoL) is that the
-            players need to communicate efficiently while playing the game in real time.
+            In League of Legends, players need to 
+            <a href="https://www.youtube.com/watch?v=PQ-jzlkQVhs&feature=youtu.be&t=24s" target="_blank">share information</a> with each other in order to kill opponents, or take objectives. 
+            Effective communication leads to players knowing which steps to take next, and thus wins.
           </p>
           <p>
-            In this interactive, we explore what communication in a 
-            <a href="http://matchhistory.na.leagueoflegends.com/en/#match-details/NA1/1986803606?tab=overview" target="_blank">game</a> of LoL looks like.
-            We recorded the voices of 3 of our players, with each bar representing a second of the game.
+            We recorded the voices of 3 of our players in a 
+            <a href="http://matchhistory.na.leagueoflegends.com/en/#match-details/NA1/1986803606?tab=overview" target="_blank">game</a> of LoL, 
+            where each bar represents a second of the game. Our goal is to explore different aspects of interactions and show the potential of speech analysis
+            in competitive video games.
           </p>
+          
           <div class="btn" action="play">
             <span>Play</span>
           </div>
         </section>
-        <section class="step">
+        <section id="distribution-section" class="step">
           <h2>Distribution</h2>
           <p>
-            The players talked on average 5:17 minutes. Which means that they talked ~14.2% of the game time.
-            Surprisingly, we can observe that all the players seemed to talk roughly the same amount.
+            The players talked on average for 5:17 minutes with the distribution being almost uniform.
           </p>
           <p>
-            Fiora, is the shot caller of the team, therefore it does make sense that he had the most amount of
-            input. However, the difference is not considerable.
+            In the <a href="#communication-section">previous</a> section, we can observe the infamous top lane island as Fiora has
+            the lowest amount of contribution during the laning phase. The player becomes more involved as the team starts grouping up and
+            take down objectives.
           </p>
+          <div class="fiora-distribution">
+          </div>
+        </section>
+        <section id="objectivecontrol-section" class="step">
+          <h2>Objective Control</h2>
           <p>
-            Perhaps, in a team like <a href="http://cloud9.gg/" target="_blank">Cloud9</a> where the team 
-            captain seems to have a significant impact this distribution would be highly skewed for 
-            <a href="https://twitter.com/Hai_L9" target="_blank">Hai</a>.
+            We can observe that all of the player kills
           </p>
         </section>
-        <section class="step">
-          <h2>Team Fight</h2>
-          <p>
-          </p>
-        </section>
-        <section class="step">
+        <section id="interruptions-section" class="step">
           <h2>Interruptions</h2>
           <p>
           </p>
         </section>
-        <section class="step last">
-          <h2>Food For Thought</h2>
+        <section id="conclusion-section" class="step last">
+          <h2>Conclusion</h2>
           <p>
             There is so much to explore about how communication affects your in game performance!
             Maybe the volume of the players make a difference? Is there an optimal time to start discussing
@@ -79,6 +80,7 @@
     <script src="libs/jquery-2.1.4.min.js"></script>
     <script src="libs/scroller.js"></script>
     <script src="charts/comms.js"></script>
+    <script src="charts/distribution.js"></script>
     <script src="charts/main.js"></script>
     <script>
       $(document).scroll(function() {

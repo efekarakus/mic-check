@@ -85,12 +85,6 @@ function comms() {
       assists: ["Braum"]
     },
     {
-      time: 1809,
-      killer: "Braum",
-      victim: "Rengar",
-      assists: ["Zilean", "Sivir"]
-    },
-    {
       time: 1828,
       killer: "Zilean",
       victim: "Tower",
@@ -305,6 +299,39 @@ function comms() {
           .selectAll("text")
           .attr("dx", function(d) { return (d === zoomTimes.end) ? ".85em" : "0em"; });
       
+      /* Timeline */
+      var timelineEvents = svg.selectAll(".timeline")
+        .data(timeline).enter()
+        .append("g")
+          .attr("transform", function(d, i) {
+            return (i % 2 === 0) ? 
+            "translate(" + (attributes.axes.top.translate.x + zoomX(d.time) - 19) + ", " + 0 + ")" :
+            "translate(" + (attributes.axes.top.translate.x + zoomX(d.time) - 19) + ", " + (attributes.svg.height - 20) + ")";
+          })
+          .attr("class", "timeline")
+          .attr("opacity", 0);
+          
+      timelineEvents.append("image")
+        .attr("xlink:href", function(d) { return "images/" + d.killer + ".png"; })
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", "19px")
+        .attr("width", "19px");
+        
+      timelineEvents.append("image")
+        .attr("xlink:href", function(d) { return "images/kill.png"; })
+        .attr("x", 19)
+        .attr("y", 0)
+        .attr("height", "19px")
+        .attr("width", "19px");
+        
+      timelineEvents.append("image")
+        .attr("xlink:href", function(d) { return "images/" + d.victim + ".png"; })
+        .attr("x", 38)
+        .attr("y", 0)
+        .attr("height", "19px")
+        .attr("width", "19px");
+      
       /* legends */
       var playerLegend = svg.selectAll(".player-legend")
         .data(data).enter()
@@ -427,9 +454,10 @@ function comms() {
     var players = g.players;
     
     // below section
-    if (previousSection === 1) {
+    if (previousSection > 0) {
       players.selectAll(".time")
         .transition()
+        .delay(0)
         .duration(0)
         .attr("opacity", 0);
         
@@ -451,26 +479,15 @@ function comms() {
     var players = g.players;
     
     // above section
-    if (previousSection === 0) {
-      chart.stop(); // FIXME
-      
-      players.selectAll(".strip")
-        .transition()
-        .duration(0)
-        .attr("x", function(d) { return x(d.start); });
-    }
+    chart.stop(); // FIXME
     
-    // TODO below section
-    
-    if (previousSection === 2) {
-      svg.select("g.top.axis").transition()
+    players.selectAll(".strip")
+      .transition()
       .duration(0)
-      .attr("opacity", 1);
-      
-      svg.select("g.bot.axis").transition()
-          .duration(0)
-          .attr("opacity", 1);
-          
+      .attr("x", function(d) { return x(d.start); });
+    
+    // below section
+    if (previousSection >= 2) {
       svg.select("g.top.zoom.axis").transition()
         .duration(0)
         .attr("opacity", 0);
@@ -478,6 +495,18 @@ function comms() {
       svg.select("g.bot.zoom.axis").transition()
           .duration(0)
           .attr("opacity", 0);
+          
+      svg.select("g.top.axis").transition()
+        .duration(500)
+        .attr("opacity", 1);
+      
+      svg.select("g.bot.axis").transition()
+          .duration(500)
+          .attr("opacity", 1);
+          
+      svg.selectAll(".timeline").transition()
+        .duration(500)
+        .attr("opacity", 0);
       
       players.selectAll(".strip")
         .transition("objective-control")
@@ -498,6 +527,7 @@ function comms() {
           });
           
       players.selectAll(".overlap").transition()
+          .delay(0)
           .duration(0)
           .attr("width", function(d) { return x(d.end) - x(d.start); })
           .attr("x", function(d) { return x(d.start); })
@@ -505,7 +535,7 @@ function comms() {
     }
     
     players.selectAll(".strip")
-      .transition("distribution-placement")
+      .transition()
       .duration(800)
         .attr("x", function(d) { return d.transition; })
         .attr("width", function(d) { return x(d.end) - x(d.start); })
@@ -519,11 +549,11 @@ function comms() {
   }
   
   function objectiveControl() {
-    
     var players = g.players;
     
     players.selectAll(".time")
         .transition()
+        .delay(0)
         .duration(0)
         .attr("opacity", 0);
     
@@ -536,21 +566,25 @@ function comms() {
         .attr("opacity", 0);
         
     svg.select("g.top.zoom.axis").transition()
-      .duration(0)
+      .duration(500)
       .attr("opacity", 1);
       
    svg.select("g.bot.zoom.axis").transition()
-      .duration(0)
+      .duration(500)
+      .attr("opacity", 1);
+      
+   svg.selectAll(".timeline").transition()
+      .duration(500)
       .attr("opacity", 1);
 
     players.selectAll(".strip")
-      .transition("distribution-placement")
+      .transition()
       .duration(0)
         .attr("opacity", function(d) {
           return ((d.start >= zoomTimes.start) && (d.end <= zoomTimes.end)) ? 1.0 : 0.0;
         });
     
-        
+    
     players.selectAll(".strip")
       .transition("objective-control")
       .duration(800)
@@ -568,7 +602,12 @@ function comms() {
             return x(d.end) - x(d.start);
           }
         });
-        
+    
+    players.selectAll(".overlap")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0);
+    
     players.selectAll(".overlap")
       .transition()
       .delay(800)
@@ -597,7 +636,58 @@ function comms() {
   }
   
   function interruptions() {
+    // reset axis
+    svg.select("g.top.zoom.axis").transition()
+        .duration(0)
+        .attr("opacity", 0);
+        
+    svg.select("g.bot.zoom.axis").transition()
+        .duration(0)
+        .attr("opacity", 0);
+        
+    svg.selectAll(".timeline").transition()
+      .duration(500)
+      .attr("opacity", 0);
+          
+    svg.select("g.top.axis").transition()
+      .duration(500)
+      .attr("opacity", 1);
+      
+    svg.select("g.bot.axis").transition()
+        .duration(500)
+        .attr("opacity", 1);
+  
+    // strips
+    var players = g.players;
+    players.selectAll(".strip")
+      .transition("objective-control")
+      .duration(800)
+        .attr("x", function(d) { 
+          return x(d.start);
+        })
+        .attr("width", function(d) {
+            return x(d.end) - x(d.start);
+        })
+        .attr("opacity", 1);
+        
+    // overlaps
+    players.selectAll(".overlap")
+      .transition()
+      .delay(0)
+      .duration(0)
+      .attr("opacity", 0);
     
+    players.selectAll(".overlap")
+      .transition()
+      .delay(800)
+      .duration(0)
+        .attr("x", function(d) {
+            return x(d.start);
+        })
+        .attr("width", function(d) {
+            return x(d.end) - x(d.start);
+        })
+        .attr("opacity", 1);
   }
   
   function conclusion() {
