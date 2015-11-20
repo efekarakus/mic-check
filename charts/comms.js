@@ -138,6 +138,13 @@ function comms() {
         d.sum = d.seconds.reduce(function(a,b) { return a + b; });
       });
       
+      console.log("Top")
+      allOverlaps(data[0].seconds, data[1].seconds, data[2].seconds);
+      console.log("Jungle")
+      allOverlaps(data[1].seconds, data[0].seconds, data[2].seconds);
+      console.log("Mid");
+      allOverlaps(data[2].seconds, data[0].seconds, data[1].seconds);
+      
       svg = d3.select(this).append("svg")
         .attr("width", attributes.svg.width)
         .attr("height", attributes.svg.height);
@@ -720,6 +727,27 @@ function comms() {
      }
      
      return overlap;
+   }
+   
+   function allOverlaps(a, b, c) {
+     var duration = a.length;
+     var overlap = 0;
+     var clear = 0;
+     
+     for (var second = 0; second < duration; second += 1) {
+       var ai = a[second];
+       var bi = b[second];
+       var ci = c[second];
+       
+       if ((ai === 1) && (bi === 1)) {
+         overlap += 1;
+       } else if ((ai === 1) && (ci === 1)) {
+         overlap += 1;
+       } else if ((ai === 1) && (bi === 0) && (ci === 0)){
+         clear += 1;
+       }
+     }
+     console.log(overlap, clear);
    }
    
    /**
