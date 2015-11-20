@@ -64,11 +64,11 @@ function distribution() {
     .append("text")
       .attr("x", width/2)
       .attr("y", height)
-      .attr("dy", "50px")
+      .attr("dy", "45px")
       .style("text-anchor", "middle")
       .style("font", "12px sans-serif")
+      .style("text-decoration", "underline")
       .text("Fiora's Speech Distribution")
-      
       
   
   svg.selectAll(".bar")

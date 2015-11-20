@@ -110,10 +110,10 @@ function comms() {
     }
   ];
   
-  var gameLength = 2225; // 37:05
+  var gameLength = 2225;  // 37:05
   var zoomTimes = {
-    start: 1740,  // 21:00
-    end: 1920     // 24:00
+    start: 1740,          // 21:00
+    end: 1920             // 24:00
   }
     
     

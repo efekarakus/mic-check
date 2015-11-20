@@ -1,4 +1,5 @@
 distribution();
+legend();
 
 var audioStart = {
   'top': 114,

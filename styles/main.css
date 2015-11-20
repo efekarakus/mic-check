@@ -71,7 +71,7 @@ body {
 }
 
 .sections section.step {
-  margin-bottom: 250px;
+  margin-bottom: 150px;
   font-size: 16px;
   line-height: 23px;
 }
@@ -139,6 +139,17 @@ body {
   height: 220px;
 }
 
+.objectivecontrol-legend {
+  margin: 0 auto;
+  margin-top: 20px;
+  width: 220px;
+  height: 220px;
+}
+
 span.pink {
   color: #CD0A6C;
+}
+
+span.bold {
+  font-weight: 700;
 }
