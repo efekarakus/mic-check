@@ -138,13 +138,6 @@ function comms() {
         d.sum = d.seconds.reduce(function(a,b) { return a + b; });
       });
       
-      console.log("Top")
-      allOverlaps(data[0].seconds, data[1].seconds, data[2].seconds);
-      console.log("Jungle")
-      allOverlaps(data[1].seconds, data[0].seconds, data[2].seconds);
-      console.log("Mid");
-      allOverlaps(data[2].seconds, data[0].seconds, data[1].seconds);
-      
       svg = d3.select(this).append("svg")
         .attr("width", attributes.svg.width)
         .attr("height", attributes.svg.height);

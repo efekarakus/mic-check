@@ -76,6 +76,51 @@ body {
   line-height: 23px;
 }
 
+/* phones */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .sections section.step.last {
+    margin-bottom: 1000px;
+  }
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px){
+.sections section.step.last {
+    margin-bottom: 1300px;
+  }
+}
+
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px)  {
+  .sections section.step.last {
+    margin-bottom: 1200px;
+  }
+}
+
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) {
+  .sections section.step.last {
+    margin-bottom: 1400px;
+  }
+}
+
+/* ipads */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .sections section.step.last {
+    margin-bottom: 900px;
+  }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .sections section.step.last {
+    margin-bottom: 900px;
+  }
+}
+
+/* Nexus 10 */
+@media (min-device-width: 800px) and (max-device-width: 1280px) {
+  .sections section.step.last {
+      margin-bottom: 1200px;
+    }
+}
+
 .sections section h2 {
   font-family: BigNoodle;
   font-weight: 700;
