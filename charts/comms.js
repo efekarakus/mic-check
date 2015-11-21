@@ -332,6 +332,15 @@ function comms() {
         .attr("height", "19px")
         .attr("width", "19px");
       
+      /* timer tick */
+      var tick = svg.append("g")
+        .attr("transform", "translate("+ (attributes.axes.top.translate.x - 5) + ", " + (attributes.axes.top.translate.y + 5) + ")" )
+        .attr("class", "timertick")
+        .style("opacity", 0);
+        
+      tick.append("path")
+        .attr("d", "M0 9 L5 0 L10 9 Z");
+        
       /* legends */
       var playerLegend = svg.selectAll(".player-legend")
         .data(data).enter()
@@ -401,6 +410,14 @@ function comms() {
     jungleAudio.play();
     midAudio.play();
     
+    var tick = svg.selectAll(".timertick")
+      .style("opacity", 1);
+      
+    tick.transition()
+      .duration(gameLength * 1000)
+      .attr("transform", "translate("+ (attributes.axes.top.translate.x + attributes.players.width - 5) + ", " + (attributes.axes.top.translate.y + 5) + ")" )
+      .ease("linear");
+    
     var players = g.players;
     players.selectAll(".strip")
       .transition("audioplay")
@@ -434,6 +451,13 @@ function comms() {
     topAudio.currentTime = audioStart.top;
     jungleAudio.currentTime = audioStart.jungle;
     midAudio.currentTime = audioStart.mid;
+    
+    var tick = svg.selectAll(".timertick")
+      .style("opacity", 0);
+      
+    tick.transition()
+      .duration(0)
+      .attr("transform", "translate("+ (attributes.axes.top.translate.x - 5) + ", " + (attributes.axes.top.translate.y + 5) + ")" );
     
     var players = g.players;
     
