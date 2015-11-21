@@ -3,6 +3,17 @@
     <title>Mic Check</title>
     <link href="styles/main.css" rel="stylesheet" type="text/css">
     <link href="styles/comms.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-17572263-1']);
+      _gaq.push(['_trackPageview']);
+      
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </head>
   <body>
     <div class="header">
@@ -21,8 +32,8 @@
           <h2>Communication</h2>
           <p>
             In League of Legends, players need to 
-            <a href="https://www.youtube.com/watch?v=PQ-jzlkQVhs&feature=youtu.be&t=24s" target="_blank">share information</a> with each other in order to kill opponents, or take objectives. 
-            Effective communication leads to players knowing which steps to take next, and thus win.
+            <a href="https://www.youtube.com/watch?v=PQ-jzlkQVhs&feature=youtu.be&t=24s" target="_blank">share information</a> with each other in order to kill opponents or take objectives. 
+            Effecting communication allows players to know which steps to take next, increasing their chances of securing a win.
           </p>
           <p>
             We recorded the voices of 3 of our players in a 
@@ -51,12 +62,12 @@
         <section id="objectivecontrol-section" class="step">
           <h2>Objective Control</h2>
           <p>
-            While taking objectives, players should be coordinating the action. Furthermore, 
+            Team chatter tends to spike as players converge around objectives. However, 
             teammates should not <span class="pink bold">interrupt</span> each other to enable
             a fluid sequence of events.
           </p>
           <p>
-            In this section, we focus on events between 29:00 and 32:00. For example, 
+            In this section, we focus on the events between 29:00 and 32:00. 
             Fiora kills Yasuo at 30:00 with the help of Hecarim. Although the two players
             were talking during the event, they also interrupted each other.
           </p>
@@ -65,7 +76,7 @@
         <section id="interruptions-section" class="step">
           <h2>Interruptions</h2>
           <p>
-            We have highlighted all the interruptions between at least two players during the match.
+            All of the interruptions between at least two players are highlighted in the following chart.
           </p>
           <p>
             Fiora was interrupted for 98 seconds out of 344 seconds, therefore <span class="pink bold">28.5%</span> of the time another
@@ -82,7 +93,7 @@
             when to take Baron or Dragon?
           </p>
           <p>
-            I would love to hear more about your opinions, feel free to message me 
+            I would love to hear more about your opinions; feel free to message me 
             <a href="https://twitter.com/efekarakus" target="_blank">@efekarakus</a>.
           </p>
           <p>
@@ -97,7 +108,10 @@
     <script src="libs/queue.min.js"></script>
     <script src="libs/jquery-2.1.4.min.js"></script>
     <script src="libs/scroller.js"></script>
-    <script src="charts/mic-check.min.js"></script>
+    <script src="charts/comms.js"></script>
+    <script src="charts/distribution.js"></script>
+    <script src="charts/legend.js"></script>
+    <script src="charts/main.js"></script>
     <script>
       $(document).scroll(function() {
         var START_POSITION = 180,
