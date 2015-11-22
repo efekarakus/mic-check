@@ -150,6 +150,20 @@ body {
   transform: skew(-.15rad);
 }
 
+.sections section .sc {
+  margin: 0 auto;
+  margin-top: 15px;
+  margin-left: 75px;
+  line-height: 40px;
+  background: url(../images/scroll_buttons.png) no-repeat 0px -40px;
+}
+
+.sections section .sc p {
+  margin-left: 45px;
+  font-family: BigNoodle;
+  font-size: 20px;
+}
+
 .sections section .btn span {
   display: inline-block;
   color: #fff;
